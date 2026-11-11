@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Encontre e gerencie pontos de coleta seletiva em Garopaba."
+    />
+    <meta name="theme-color" content="#166534" />
+    <title>Vitrine de Descarte | Garopaba Sustentável</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/estilo.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="topo-vitrine">
+        <span class="selo-snct"
+          ><i class="fa-solid fa-leaf" aria-hidden="true"></i> SNCT 2026 ·
+          Garopaba Sustentável</span
+        >
+        <h1>Vitrine de Descarte &amp; Ecopontos</h1>
+        <p>
+          Encontre pontos de coleta seletiva e descarte correto de resíduos em
+          Garopaba.
+        </p>
+      </header>
+
+      <main>
+        <section class="painel-filtros" aria-labelledby="titulo-filtros">
+          <div class="cabecalho-filtros">
+            <div>
+              <span class="texto-apoio">ENCONTRE UM LOCAL</span>
+              <h2 id="titulo-filtros">Como podemos ajudar?</h2>
+            </div>
+            <button class="btn-primario" id="btnNovoEcoponto" type="button">
+              <i class="fa-solid fa-plus" aria-hidden="true"></i> Cadastrar
+              ecoponto
+            </button>
+          </div>
+
+          <div class="campo-busca">
+            <label class="sr-only" for="inputBusca"
+              >Buscar por bairro, local ou resíduo</label
+            >
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="inputBusca"
+              placeholder="Buscar por bairro, local ou resíduo..."
+              autocomplete="off"
+            />
+          </div>
+
+          <fieldset class="secao-filtro">
+            <legend class="titulo-filtro">Tipo de resíduo</legend>
+            <div class="grupo-botoes" id="filtrosCategoria">
+              <button
+                class="btn-filtro ativo"
+                type="button"
+                data-filter="categoria"
+                data-value="Todos"
+                aria-pressed="true"
+              >
+                Todos
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="categoria"
+                data-value="Reciclaveis"
+                aria-pressed="false"
+              >
+                Recicláveis
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="categoria"
+                data-value="Vidro"
+                aria-pressed="false"
+              >
+                Vidro
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="categoria"
+                data-value="Eletronicos"
+                aria-pressed="false"
+              >
+                Eletrônicos
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="categoria"
+                data-value="Oleo"
+                aria-pressed="false"
+              >
+                Óleo de cozinha
+              </button>
+            </div>
+          </fieldset>
+
+          <fieldset class="secao-filtro">
+            <legend class="titulo-filtro">Bairro / localidade</legend>
+            <div class="grupo-botoes" id="filtrosBairro">
+              <button
+                class="btn-filtro ativo"
+                type="button"
+                data-filter="bairro"
+                data-value="Todos"
+                aria-pressed="true"
+              >
+                Todos os bairros
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="bairro"
+                data-value="Centro"
+                aria-pressed="false"
+              >
+                Centro
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="bairro"
+                data-value="Campo D'Una"
+                aria-pressed="false"
+              >
+                Campo D'Una
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="bairro"
+                data-value="Ferrugem"
+                aria-pressed="false"
+              >
+                Ferrugem
+              </button>
+              <button
+                class="btn-filtro"
+                type="button"
+                data-filter="bairro"
+                data-value="Silveira"
+                aria-pressed="false"
+              >
+                Silveira
+              </button>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="resultados" aria-labelledby="titulo-resultados">
+          <div class="barra-status">
+            <div>
+              <span class="texto-apoio">PONTOS DE COLETA</span>
+              <h2 id="titulo-resultados">Locais cadastrados</h2>
+            </div>
+            <p id="contadorResultados" role="status" aria-live="polite">
+              Carregando locais...
+            </p>
+          </div>
+          <div
+            id="mensagemSistema"
+            class="mensagem-sistema"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
+          <div
+            id="gradeEcopontos"
+            class="vitrine-grid"
+            aria-live="polite"
+          ></div>
+        </section>
+      </main>
+
+      <footer class="rodape">
+        <p>
+          <i class="fa-solid fa-seedling" aria-hidden="true"></i> Pequenas
+          atitudes constroem uma Garopaba mais sustentável.
+        </p>
+      </footer>
+    </div>
+
+    <dialog id="modalEcoponto" class="modal">
+      <form id="formEcoponto" class="formulario-modal" method="dialog">
+        <div class="modal-cabecalho">
+          <div>
+            <span class="texto-apoio">GERENCIAMENTO</span>
+            <h2 id="tituloModal">Cadastrar ecoponto</h2>
+          </div>
+          <button
+            type="button"
+            class="btn-fechar"
+            id="btnFecharModal"
+            aria-label="Fechar"
+          >
+            ×
+          </button>
+        </div>
+
+        <input type="hidden" id="ecopontoId" />
+        <label for="nome">Nome do ecoponto</label>
+        <input id="nome" name="nome" maxlength="500" required />
+
+        <div class="campos-duplos">
+          <div>
+            <label for="bairro">Bairro / localidade</label>
+            <input id="bairro" name="bairro" maxlength="500" required />
+          </div>
+          <div>
+            <label for="categoria">Tipo de resíduo</label>
+            <select id="categoria" name="categoria" required>
+              <option value="Reciclaveis">Recicláveis</option>
+              <option value="Vidro">Vidro</option>
+              <option value="Eletronicos">Eletrônicos</option>
+              <option value="Oleo">Óleo de cozinha</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="horario">Horário de funcionamento</label>
+        <input
+          id="horario"
+          name="horario"
+          maxlength="500"
+          placeholder="Ex.: Segunda a sexta, 08h às 17h"
+          required
+        />
+
+        <label for="endereco">Endereço</label>
+        <input id="endereco" name="endereco" maxlength="500" required />
+
+        <label for="mapaUrl">Link do Google Maps</label>
+        <input
+          id="mapaUrl"
+          name="mapaUrl"
+          type="url"
+          maxlength="500"
+          placeholder="https://..."
+          required
+        />
+
+        <p class="erro-formulario" id="erroFormulario" role="alert" hidden></p>
+        <div class="acoes-modal">
+          <button type="button" class="btn-secundario" id="btnCancelar">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-primario" id="btnSalvar">
+            Salvar ecoponto
+          </button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
